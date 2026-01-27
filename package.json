@@ -1,0 +1,130 @@
+{
+  "name": "propflow",
+  "displayName": "PropFlow",
+  "description": "Visualize React prop flow and eliminate prop drilling confusion",
+  "version": "0.0.1",
+  "publisher": "rutpshah",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rutpshah/propflow"
+  },
+  "bugs": {
+    "url": "https://github.com/rutpshah/propflow/issues"
+  },
+  "homepage": "https://github.com/rutpshah/propflow#readme",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "react",
+    "props",
+    "typescript",
+    "javascript",
+    "component",
+    "jsx",
+    "tsx"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact"
+  ],
+  "main": "./out/src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "propflow.showLineage",
+        "title": "PropFlow: Show PropFlow Lineage",
+        "icon": "$(type-hierarchy)"
+      },
+      {
+        "command": "propflow.traceProp",
+        "title": "PropFlow: Trace Prop Upstream",
+        "icon": "$(arrow-up)"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact",
+          "command": "propflow.showLineage",
+          "group": "navigation@1"
+        },
+        {
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact",
+          "command": "propflow.traceProp",
+          "group": "navigation@2"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "propflow.showLineage",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        },
+        {
+          "command": "propflow.traceProp",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "propflow.showLineage",
+        "key": "ctrl+shift+p ctrl+shift+l",
+        "mac": "cmd+shift+p cmd+shift+l",
+        "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+      },
+      {
+        "command": "propflow.traceProp",
+        "key": "ctrl+shift+p ctrl+shift+t",
+        "mac": "cmd+shift+p cmd+shift+t",
+        "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "propflowLineage",
+          "name": "PropFlow Lineage",
+          "icon": "$(type-hierarchy)",
+          "contextualTitle": "PropFlow"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "propflowLineage",
+        "contents": "No prop trace yet.\n\nPlace your cursor on a prop and run:\n[Show PropFlow Lineage](command:propflow.showLineage)\n\nOr use the command palette (Ctrl+Shift+P) and search for 'PropFlow'."
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package --out ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "@types/mocha": "^10.0.6",
+    "@types/glob": "^8.1.0",
+    "@vscode/test-electron": "^2.3.8",
+    "typescript": "^5.3.0",
+    "mocha": "^10.2.0",
+    "glob": "^10.3.10",
+    "@vscode/vsce": "^2.22.0"
+  },
+  "dependencies": {
+    "ts-morph": "^21.0.0"
+  }
+}

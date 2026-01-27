@@ -1,0 +1,11 @@
+node_modules/
+out/
+dist/
+*.vsix
+*.tsbuildinfo
+*.log
+.DS_Store
+.idea/
+*.swp
+.vscode/
+.vscode-test/

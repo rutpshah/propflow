@@ -6,9 +6,9 @@
 
 **Visualize React prop flow and eliminate prop drilling confusion**
 
-[![VS Code Marketplace](https://img.shields.io/vscode-marketplace/v/propflow.propflow.svg)](https://marketplace.visualstudio.com/items?itemName=propflow.propflow)
-[![Downloads](https://img.shields.io/vscode-marketplace/d/propflow.propflow.svg)](https://marketplace.visualstudio.com/items?itemName=propflow.propflow)
-[![Rating](https://img.shields.io/vscode-marketplace/r/propflow.propflow.svg)](https://marketplace.visualstudio.com/items?itemName=propflow.propflow)
+[![VS Code Marketplace](https://img.shields.io/vscode-marketplace/v/rutpshah.propflow.svg)](https://marketplace.visualstudio.com/items?itemName=rutpshah.propflow)
+[![Downloads](https://img.shields.io/vscode-marketplace/d/rutpshah.propflow.svg)](https://marketplace.visualstudio.com/items?itemName=rutpshah.propflow)
+[![Rating](https://img.shields.io/vscode-marketplace/r/rutpshah.propflow.svg)](https://marketplace.visualstudio.com/items?itemName=rutpshah.propflow)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 [Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Demo](#-demo) • [Contributing](#-contributing)

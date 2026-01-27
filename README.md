@@ -51,9 +51,13 @@ Visual hierarchical sidebar showing the full component chain.
 - 🔵 **USAGE** - Pass-through components
 - 🟣 **DEFINITION** - Current component
 
+![Color Coded Visualization Demo](assets/hover-view.png)
+
 ### 🚀 **Click-to-Navigate**
 
 Jump directly to any component in the chain with one click.
+
+![Click to Navigate Demo](assets/click-to-navigate.gif)
 
 ### ⚡ **Performance Optimized**
 
@@ -83,7 +87,7 @@ Jump directly to any component in the chain with one click.
 
 ### From VSIX File
 
-1. Download the latest `.vsix` file from [Releases](https://github.com/yourusername/propflow/releases)
+1. Download the latest `.vsix` file from [Releases](https://github.com/rutpshah/propflow/releases)
 2. Open VS Code
 3. Press `Ctrl+Shift+P` → Type "Install from VSIX"
 4. Select the downloaded file
@@ -140,7 +144,7 @@ function Button({ label }) {
 
 ### Method 3: CodeLens
 
-Look for the `⬆ Trace Props` link above component definitions and click it.
+Look for the `⬆ Trace Props` link above component definitions and click it. From notification click on "View in PropFlow Lineage Panel" to see the details in sidebar panel.
 
 ---
 
@@ -179,7 +183,6 @@ function Card({ title, buttonLabel }) {
 
 ```tsx
 function Button({ label }) {
-  // ← Hover here
   return <button>{label}</button>;
 }
 ```

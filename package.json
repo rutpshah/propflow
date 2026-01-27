@@ -2,7 +2,7 @@
   "name": "propflow",
   "displayName": "PropFlow",
   "description": "Visualize React prop flow and eliminate prop drilling confusion",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "publisher": "rutpshah",
   "repository": {
     "type": "git",
@@ -18,8 +18,7 @@
   },
   "categories": [
     "Programming Languages",
-    "Visualization",
-    "Other"
+    "Visualization"
   ],
   "keywords": [
     "react",

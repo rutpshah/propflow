@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![PropFlow Logo](assets/logo.png)
+![PropFlow Logo](assets/wordmark-logo.png)
 
 **Visualize React prop flow and eliminate prop drilling confusion**
 

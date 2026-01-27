@@ -10,8 +10,6 @@ let treeProvider: PropLineageTreeProvider;
 let outputChannel: vscode.OutputChannel;
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log("PropFlow extension is now active");
-
   // Create output channel for debugging
   outputChannel = vscode.window.createOutputChannel("PropFlow");
   outputChannel.appendLine("PropFlow extension activated");

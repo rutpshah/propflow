@@ -10,6 +10,8 @@ let treeProvider: PropLineageTreeProvider;
 let outputChannel: vscode.OutputChannel;
 
 export function activate(context: vscode.ExtensionContext) {
+  console.log("PropFlow extension is now active");
+
   // Create output channel for debugging
   outputChannel = vscode.window.createOutputChannel("PropFlow");
   outputChannel.appendLine("PropFlow extension activated");
@@ -36,6 +38,19 @@ export function activate(context: vscode.ExtensionContext) {
     "propflow.traceProp",
     async () => {
       await tracePropUpstream();
+    },
+  );
+
+  // Command for CodeLens - shows prop picker
+  const tracePropsFromCodeLensCommand = vscode.commands.registerCommand(
+    "propflow.tracePropsFromCodeLens",
+    async (
+      filePath: string,
+      componentName: string,
+      props: string[],
+      line: number,
+    ) => {
+      await showPropPickerAndTrace(filePath, componentName, props, line);
     },
   );
 
@@ -66,9 +81,89 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     showLineageCommand,
     tracePropCommand,
+    tracePropsFromCodeLensCommand,
     treeView,
     hoverDisposable,
     codeLensDisposable,
+  );
+}
+
+async function showPropPickerAndTrace(
+  filePath: string,
+  componentName: string,
+  props: string[],
+  line: number,
+) {
+  // If no props, show error
+  if (!props || props.length === 0) {
+    vscode.window.showInformationMessage(
+      `Component "${componentName}" has no props to trace.`,
+    );
+    return;
+  }
+
+  // If only one prop, trace it directly
+  if (props.length === 1) {
+    await tracePropForComponent(filePath, componentName, props[0]);
+    return;
+  }
+
+  // Show picker for multiple props
+  const selectedProp = await vscode.window.showQuickPick(props, {
+    placeHolder: `Select a prop from ${componentName} to trace`,
+    title: "PropFlow: Select Prop to Trace",
+  });
+
+  if (!selectedProp) {
+    return; // User cancelled
+  }
+
+  await tracePropForComponent(filePath, componentName, selectedProp);
+}
+
+async function tracePropForComponent(
+  filePath: string,
+  componentName: string,
+  propName: string,
+) {
+  // Show progress
+  await vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: `Tracing prop "${propName}" in ${componentName}...`,
+      cancellable: false,
+    },
+    async () => {
+      try {
+        const trace = await graphBuilder.buildPropChain(
+          filePath,
+          componentName,
+          propName,
+        );
+
+        if (trace.chain.length === 0) {
+          vscode.window.showInformationMessage("Trace not found");
+          return;
+        }
+
+        treeProvider.setTrace(trace);
+
+        let message = `Found ${trace.chain.length} levels in prop chain`;
+        if (trace.ambiguous) {
+          message += " (contains spread operators)";
+        }
+
+        vscode.window
+          .showInformationMessage(message, "View in PropFlow Lineage")
+          .then((selection) => {
+            if (selection === "View in PropFlow Lineage") {
+              vscode.commands.executeCommand("propflowLineage.focus");
+            }
+          });
+      } catch (error) {
+        vscode.window.showErrorMessage(`Error tracing prop: ${error}`);
+      }
+    },
   );
 }
 
@@ -85,15 +180,18 @@ async function showPropLineage() {
   // Get word at cursor (prop name)
   const wordRange = document.getWordRangeAtPosition(position);
   if (!wordRange) {
-    vscode.window.showErrorMessage("No prop selected");
+    vscode.window.showInformationMessage(
+      "Place your cursor on a prop name to trace it, or click the '⬆ Trace Props' CodeLens above a component.",
+    );
     return;
   }
 
   const propName = document.getText(wordRange);
   const filePath = document.uri.fsPath;
 
-  // Find component name
-  const components = astAnalyzer.analyzeFile(filePath);
+  // Find component name - use in-memory content for unsaved changes
+  const documentText = document.getText();
+  const components = astAnalyzer.analyzeFile(filePath, documentText);
   const line = position.line + 1;
 
   let componentName: string | undefined;
@@ -132,20 +230,10 @@ async function showPropLineage() {
 
         let message = `Found ${trace.chain.length} levels in prop chain`;
         if (trace.ambiguous) {
-          message += " (contains spread operators)";
+          message += " (contains spread operators - trace may be incomplete)";
         }
 
-        vscode.window
-          .showInformationMessage(
-            message,
-            "View in PropFlow Lineage Panel",
-            "Dismiss",
-          )
-          .then((selection) => {
-            if (selection === "View in PropFlow Lineage Panel") {
-              vscode.commands.executeCommand("propflowLineage.focus");
-            }
-          });
+        vscode.window.showInformationMessage(message);
       } catch (error) {
         vscode.window.showErrorMessage(`Error tracing prop: ${error}`);
       }
@@ -172,7 +260,9 @@ async function tracePropUpstream() {
   const propName = document.getText(wordRange);
   const filePath = document.uri.fsPath;
 
-  const components = astAnalyzer.analyzeFile(filePath);
+  // Use in-memory content for unsaved changes
+  const documentText = document.getText();
+  const components = astAnalyzer.analyzeFile(filePath, documentText);
   const line = position.line + 1;
 
   let componentName: string | undefined;
@@ -253,8 +343,9 @@ class PropFlowHoverProvider implements vscode.HoverProvider {
     }
 
     try {
-      // Find component name
-      const components = astAnalyzer.analyzeFile(filePath);
+      // Find component name - use in-memory document text for unsaved changes
+      const documentText = document.getText();
+      const components = astAnalyzer.analyzeFile(filePath, documentText);
       this.outputChannel.appendLine(
         `Found ${components.length} components in file`,
       );
@@ -417,16 +508,19 @@ class PropFlowCodeLensProvider implements vscode.CodeLensProvider {
     }
 
     try {
-      const components = astAnalyzer.analyzeFile(filePath);
+      // Pass the in-memory document text to handle unsaved changes
+      const documentText = document.getText();
+      const components = astAnalyzer.analyzeFile(filePath, documentText);
 
       for (const component of components) {
         const line = component.line - 1;
         const range = new vscode.Range(line, 0, line, 0);
 
+        // Pass component info to the command so it can show a prop picker
         const lens = new vscode.CodeLens(range, {
           title: `⬆ Trace Props`,
-          command: "propflow.showLineage",
-          arguments: [],
+          command: "propflow.tracePropsFromCodeLens",
+          arguments: [filePath, component.name, component.props, line + 1],
         });
 
         codeLenses.push(lens);

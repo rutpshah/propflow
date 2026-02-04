@@ -8,12 +8,11 @@ import {
 } from "ts-morph";
 import { ComponentInfo } from "./types";
 import * as vscode from "vscode";
-import * as path from "path";
 
 export class ASTAnalyzer {
-  private project: Project;
+  readonly project: Project;
 
-  constructor(private outputChannel?: vscode.OutputChannel) {
+  constructor(readonly outputChannel?: vscode.OutputChannel) {
     this.project = new Project({
       skipAddingFilesFromTsConfig: true,
     });
@@ -27,9 +26,34 @@ export class ASTAnalyzer {
 
   /**
    * Analyzes a file and extracts component information
+   * @param filePath Path to the file
+   * @param documentText Optional in-memory document text (for unsaved changes)
    */
-  public analyzeFile(filePath: string): ComponentInfo[] {
-    const sourceFile = this.project.addSourceFileAtPath(filePath);
+  public analyzeFile(filePath: string, documentText?: string): ComponentInfo[] {
+    let sourceFile = this.project.getSourceFile(filePath);
+
+    if (documentText) {
+      // Use in-memory content (for unsaved changes in VS Code)
+      if (sourceFile) {
+        // Update existing source file with new content
+        sourceFile.replaceWithText(documentText);
+      } else {
+        // Create new source file with in-memory content
+        sourceFile = this.project.createSourceFile(filePath, documentText, {
+          overwrite: true,
+        });
+      }
+    } else {
+      // Use file system content
+      if (sourceFile) {
+        // Refresh from disk
+        sourceFile.refreshFromFileSystemSync();
+      } else {
+        // Add from disk
+        sourceFile = this.project.addSourceFileAtPath(filePath);
+      }
+    }
+
     const components: ComponentInfo[] = [];
 
     // Find function components
@@ -355,6 +379,7 @@ export class ASTAnalyzer {
               this.log(`    ✓✓ MATCHED prop "${propName}" at line ${line}`);
 
               if (!initializer) {
+                // Boolean prop like <Component show />
                 this.log(`    Value: true (boolean)`);
                 return { line, value: "true" };
               }
@@ -410,11 +435,21 @@ export class ASTAnalyzer {
       props = this.extractPropsFromTypeDefinition(sourceFile, name);
     }
 
+    // Get the line number of the function keyword, not the export keyword
+    // by using the function keyword's position
+    let line = func.getStartLineNumber();
+    const functionKeyword = func.getFirstChildByKind(
+      SyntaxKind.FunctionKeyword,
+    );
+    if (functionKeyword) {
+      line = functionKeyword.getStartLineNumber();
+    }
+
     return {
       name,
       filePath,
       props,
-      line: func.getStartLineNumber(),
+      line,
     };
   }
 
@@ -447,11 +482,21 @@ export class ASTAnalyzer {
       props = this.extractPropsFromTypeDefinition(sourceFile, name);
     }
 
+    // Get the line of the variable declaration (const ComponentName = ...)
+    // This should be the line where 'const' keyword appears
+    const varStatement = varDecl.getVariableStatement();
+    let line = varDecl.getStartLineNumber();
+
+    // If there's a variable statement (const/let/var), use its line
+    if (varStatement) {
+      line = varStatement.getStartLineNumber();
+    }
+
     return {
       name,
       filePath,
       props,
-      line: varDecl.getStartLineNumber(),
+      line,
     };
   }
 

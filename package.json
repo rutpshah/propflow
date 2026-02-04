@@ -112,7 +112,10 @@
     "pretest": "npm run compile",
     "test": "node ./out/test/runTest.js",
     "package": "vsce package --out ./",
-    "generate-vix": "npm run compile & npm run package"
+    "generate-vix": "npm run compile & npm run package",
+    "patch-release": "npm version patch",
+    "minor-release": "npm version minor",
+    "major-release": "npm version major"
   },
   "devDependencies": {
     "@types/vscode": "^1.85.0",

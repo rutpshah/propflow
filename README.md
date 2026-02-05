@@ -138,13 +138,30 @@ function Button({ label }) {
 ### Method 2: Command Palette
 
 1. Place cursor on a prop
-2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P`)
-3. Type "PropFlow: Show Lineage"
+2. Press `Ctrl+Shift+P` (`Cmd+Shift+P` on Mac) to open the Command Palette
+3. Type "PropFlow: Show Lineage" and press Enter
 4. View the tree in the **PropFlow Lineage** sidebar
+
+**Optional:** Add a custom keyboard shortcut:
+
+- Open Keyboard Shortcuts: `Ctrl+Shift+P` / `Cmd+Shift+P` → "Preferences: Open Keyboard Shortcuts"
+- Search for "PropFlow: Show Lineage"
+- Click `+` to add a keybinding (e.g., `Ctrl+Alt+P` on Windows/Linux or `Cmd+Alt+P` on Mac)
 
 ### Method 3: CodeLens
 
 Look for the `⬆ Trace Props` link above component definitions and click it. From notification click on "View in PropFlow Lineage Panel" to see the details in sidebar panel.
+
+## Method 4: Keyboard Shortcuts (Optional)
+
+PropFlow works without keyboard shortcuts via hover and CodeLens.
+If you want a keyboard shortcut, add this to your keybindings.json:
+
+{
+"key": "cmd+alt+p",
+"command": "propflow.showLineage",
+"when": "editorTextFocus"
+}
 
 ---
 

@@ -464,7 +464,15 @@ We use conventional commits:
 
 ## 🐛 Known Issues & Limitations
 
-### Current Limitations (v1.0)
+### Current Limitations (v1.0.0)
+
+### Multiple Parent Components
+
+When a component is used in multiple places, PropFlow currently shows the trace
+from the first parent found. Use VS Code's "Find All References" to see all
+usages, then trace each parent individually.
+
+**Coming in v1.2:** View all parent chains simultaneously.
 
 ❌ **Not Supported:**
 

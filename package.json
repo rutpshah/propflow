@@ -2,7 +2,7 @@
   "name": "propflow",
   "displayName": "PropFlow",
   "description": "Visualize React prop flow and eliminate prop drilling confusion",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "rutpshah",
   "repository": {
     "type": "git",
@@ -74,20 +74,7 @@
         }
       ]
     },
-    "keybindings": [
-      {
-        "command": "propflow.showLineage",
-        "key": "ctrl+shift+p ctrl+shift+l",
-        "mac": "cmd+shift+p cmd+shift+l",
-        "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
-      },
-      {
-        "command": "propflow.traceProp",
-        "key": "ctrl+shift+p ctrl+shift+t",
-        "mac": "cmd+shift+p cmd+shift+t",
-        "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
-      }
-    ],
+    "keybindings": [],
     "views": {
       "explorer": [
         {

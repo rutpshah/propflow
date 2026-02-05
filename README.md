@@ -495,7 +495,6 @@ See [Issues](https://github.com/rutpshah/propflow/issues) for active bugs and fe
 
 - [ ] Context API support
 - [ ] Redux store tracing
-- [ ] Performance optimizations for 50k+ file projects
 - [ ] Configurable color schemes
 - [ ] Prop documentation in hover tooltip
 

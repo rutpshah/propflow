@@ -59,12 +59,12 @@
         {
           "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact",
           "command": "propflow.showLineage",
-          "group": "navigation@1"
+          "group": "z_commands@1"
         },
         {
           "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact",
           "command": "propflow.traceProp",
-          "group": "navigation@2"
+          "group": "z_commands@2"
         }
       ],
       "commandPalette": [

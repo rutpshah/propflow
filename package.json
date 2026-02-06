@@ -2,7 +2,7 @@
   "name": "propflow",
   "displayName": "PropFlow",
   "description": "Instantly trace React props through your component tree. Debug prop drilling, visualize data flow, and navigate TypeScript/JavaScript components with ease. Perfect for React and React Native developers.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "rutpshah",
   "repository": {
     "type": "git",

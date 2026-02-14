@@ -120,6 +120,8 @@
     "@vscode/vsce": "^2.22.0"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
+    "node-fetch": "^3.3.2",
     "ts-morph": "^21.0.0"
   }
 }

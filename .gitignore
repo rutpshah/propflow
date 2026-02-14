@@ -7,5 +7,5 @@ dist/
 .DS_Store
 .idea/
 *.swp
-.vscode/
 .vscode-test/
+config.bat
